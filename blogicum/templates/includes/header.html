@@ -18,11 +18,6 @@
               Правила
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link {% if view_name == 'pages:contacts' %} text-white {% endif %}" href="{% url 'pages:contacts' %}">
-              Контакты
-            </a>
-          </li>
           {% if user.is_authenticated %}
             <div class="btn-group" role="group" aria-label="Basic outlined example">
               <button type="button" class="btn btn-outline-primary"><a class="text-decoration-none text-reset"

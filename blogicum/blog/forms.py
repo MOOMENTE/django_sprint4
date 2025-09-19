@@ -1,49 +1,55 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from django.utils import timezone
 
-from .models import Comment, Post
-
-User = get_user_model()
+from .models import Post, Comment
 
 
 class PostForm(forms.ModelForm):
-    pub_date = forms.DateTimeField(
-        label="Дата публикации",
-        widget=forms.DateTimeInput(
-            attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
-        ),
-        input_formats=("%Y-%m-%dT%H:%M",),
-    )
-
     class Meta:
         model = Post
-        fields = ("title", "text", "pub_date", "category", "location", "image")
+        fields = (
+            'title', 'text', 'pub_date', 'location', 'category', 'image'
+        )
+        widgets = {
+            'pub_date': forms.DateTimeInput(
+                attrs={'type': 'datetime-local'},
+                format='%Y-%m-%dT%H:%M'
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        pub_date_field = self.fields['pub_date']
+        pub_date_field.input_formats = ['%Y-%m-%dT%H:%M']
+
+        if self.data:
+            return
+
+        if self.instance.pk and self.instance.pub_date:
+            value = self.instance.pub_date
+        else:
+            value = timezone.now()
+
+        if timezone.is_aware(value):
+            value = timezone.localtime(value)
+
+        self.initial.setdefault(
+            'pub_date',
+            value.replace(second=0, microsecond=0)
+        )
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ("text",)
-        widgets = {"text": forms.Textarea(attrs={"rows": 3})}
+        fields = ('text',)
 
 
-class ProfileForm(forms.ModelForm):
+User = get_user_model()
+
+
+class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "username", "email")
-
-
-class UserRegistrationForm(UserCreationForm):
-    email = forms.EmailField(label="Адрес электронной почты")
-
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ("username", "email",)
-
-    def save(self, commit: bool = True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data["email"]
-        if commit:
-            user.save()
-        return user
+        fields = ('username', 'first_name', 'last_name', 'email')
