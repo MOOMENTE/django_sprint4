@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+  {{ page_title }}
+{% endblock %}
+{% block content %}
+  <section class="col-lg-8 mx-auto">
+    <h1 class="mb-4 text-center">Связаться с автором</h1>
+    <p class="lead">Проект собран специально для итогового спринта «Блогикум» Юсуповым Аюбджоном.</p>
+    <p>Если нужна обратная связь, пишите автору по контактам ниже.</p>
+    <div class="card my-4">
+      <div class="card-body">
+        <h5 class="card-title">{{ primary_contact }}</h5>
+        <p class="card-text">
+          Электронная почта:
+          <a href="mailto:{{ email }}">{{ email }}</a>
+        </p>
+        <p class="card-text text-muted">
+          Ответы приходят в течение одного рабочего дня. Не стесняйтесь делиться
+          идеями рубрик или предлагать материалы для публикации — автор свяжется
+          с вами лично.
+        </p>
+      </div>
+    </div>
+  </section>
+{% endblock %}
