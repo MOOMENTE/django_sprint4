@@ -18,7 +18,10 @@ def bootstrap_css():
 
 @register.simple_tag
 def bootstrap_button(*, button_type="submit", content="", **_kwargs):
-    html = f'<button type="{button_type}" class="btn btn-primary">{content}</button>'
+    html = (
+        f'<button type="{button_type}" class="btn btn-primary">'
+        f"{content}</button>"
+    )
     return mark_safe(html)
 
 
